@@ -91,10 +91,10 @@ var file_service_proto_goTypes = []interface{}{
 	(*Empty)(nil), // 0: gen.Empty
 }
 var file_service_proto_depIdxs = []int32{
-	0, // 0: gen.DummyService.Foo:input_type -> gen.Empty
-	0, // 1: gen.DummyService.FooS:input_type -> gen.Empty
-	0, // 2: gen.DummyService.Foo:output_type -> gen.Empty
-	0, // 3: gen.DummyService.FooS:output_type -> gen.Empty
+	0, // 0: foobar.DummyService.Foo:input_type -> gen.Empty
+	0, // 1: foobar.DummyService.FooS:input_type -> gen.Empty
+	0, // 2: foobar.DummyService.Foo:output_type -> gen.Empty
+	0, // 3: foobar.DummyService.FooS:output_type -> gen.Empty
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
