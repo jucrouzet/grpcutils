@@ -242,6 +242,7 @@ Provided fields are :
 | `zaplogger.FieldServerType` | `zap.String` | Type (`fmt.Sprintf("%T")` result) or the gRPC server implentation struct  | `"*mypackage.MyGRPCServer"`  |
 | `zaplogger.FieldRemoteAddr` | `zap.String` | Remote address (usually <ip>:<port>) of the client calling the method  |  `"127.0.0.1:1234"`  |
 | `zaplogger.FieldMethod`     | `zap.String` | Name of the gRPC method called  | `"/package.Service/MyMethod"` |
+| `zaplogger.FieldRequestID`  | `zap.String` | Unique request correlation identifier (see `requestid`) | `"/package.Service/MyMethod"` |
 
 Logger should be instanciated and added to interceptors like this :
 

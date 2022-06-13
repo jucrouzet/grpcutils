@@ -13,6 +13,7 @@ import (
 
 	"github.com/jucrouzet/grpcutils/internal/pkg/foobar"
 	"github.com/jucrouzet/grpcutils/internal/pkg/utils"
+	"github.com/jucrouzet/grpcutils/pkg/requestid"
 )
 
 func TestGetFromContext(t *testing.T) {
@@ -109,10 +110,16 @@ func (d *dummyLoggerWithFields) Foo(ctx context.Context, in *foobar.Empty) (*foo
 				assert.Equal(d.t, zapcore.StringType, f.Type, "method has a wrong type")
 				okFields = append(okFields, FieldMethod)
 			}
+			if f.Key == FieldRequestID {
+				assert.Equal(d.t, "I'm a unique ID", f.String, "request ID has a wrong value")
+				assert.Equal(d.t, zapcore.StringType, f.Type, "request ID a wrong type")
+				okFields = append(okFields, FieldRequestID)
+			}
 		}
 	}
 	assert.Contains(d.t, okFields, FieldServerType, "expected server type field")
 	assert.Contains(d.t, okFields, FieldRemoteAddr, "expected remote addr field")
+	assert.Contains(d.t, okFields, FieldRequestID, "expected request id field")
 	return &foobar.Empty{}, nil
 }
 
@@ -140,6 +147,11 @@ func (d *dummyLoggerWithFields) FooS(s foobar.DummyService_FooSServer) error {
 				assert.Equal(d.t, zapcore.StringType, f.Type, "method has a wrong type")
 				okFields = append(okFields, FieldMethod)
 			}
+			if f.Key == FieldRequestID {
+				assert.Equal(d.t, "I'm a unique ID", f.String, "request ID has a wrong value")
+				assert.Equal(d.t, zapcore.StringType, f.Type, "request ID a wrong type")
+				okFields = append(okFields, FieldMethod)
+			}
 		}
 	}
 	assert.Contains(d.t, okFields, FieldRemoteAddr, "expected remote addr field")
@@ -165,12 +177,14 @@ func TestWithFields(t *testing.T) {
 			FieldRemoteAddr,
 			FieldRemoteAddr,
 			FieldRemoteAddr,
+			FieldRequestID,
 		),
 	)
 	opts := []grpc.ServerOption{
 		grpc.UnaryInterceptor(l.UnaryInterceptor()),
 	}
-	utils.TestCallFoo(t, &dummyLoggerWithFields{t: t, logs: recordedLogs}, nil, opts)
+	ctx := requestid.AppendToOutgoingContext(context.Background(), "I'm a unique ID")
+	utils.TestCallFoo(t, &dummyLoggerWithFields{t: t, logs: recordedLogs}, nil, opts, ctx)
 
 	core, recordedLogs = observer.New(zapcore.DebugLevel)
 	l, _ = New(
@@ -178,6 +192,8 @@ func TestWithFields(t *testing.T) {
 		WithFields(
 			FieldRemoteAddr,
 			FieldMethod,
+			// Field is added bu not sent and not interceptor, should not be here
+			FieldRequestID,
 		),
 	)
 	opts = []grpc.ServerOption{
