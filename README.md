@@ -1,6 +1,6 @@
 # gRPCUtils : a collection of gRPC utilities for Go
 
-
+[![Go Reference](https://pkg.go.dev/badge/github.com/jucrouzet/grpcutils.svg)](https://pkg.go.dev/github.com/jucrouzet/grpcutils)
 
 Package holds some common utilities for gRPC development in go.
 
