@@ -27,7 +27,7 @@ go-lint: revive-check go-format go-vet
 	@echo ">> linting code"
 	@revive -formatter stylish --config ./.revive.toml ./...
 
-go-tests: go-check protos-update
+go-tests: go-check
 	@echo ">> running tests"
 	@go test ./...
 
