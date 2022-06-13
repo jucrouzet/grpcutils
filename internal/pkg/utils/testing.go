@@ -32,6 +32,7 @@ func testDialer(impl foobar.DummyServiceServer, opts ...grpc.ServerOption) func(
 	}
 }
 
+// TestCallFoo for tests
 func TestCallFoo(
 	t *testing.T,
 	impl foobar.DummyServiceServer,
@@ -58,6 +59,7 @@ func TestCallFoo(
 	return v, header, trailer, err
 }
 
+// TestCallFooS for tests
 func TestCallFooS(
 	t *testing.T,
 	impl foobar.DummyServiceServer,

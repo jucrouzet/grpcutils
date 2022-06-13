@@ -17,5 +17,7 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
+    - name: Lint
+      run: make go-lint
     - name: Test
-      run: go test -v ./...
+      run: make go-tests
