@@ -13,6 +13,7 @@ import (
 
 	"github.com/jucrouzet/grpcutils/internal/pkg/utils"
 	"github.com/jucrouzet/grpcutils/pkg/remoteaddr"
+	"github.com/jucrouzet/grpcutils/pkg/requestid"
 )
 
 // Logger is a uber/zap logger for a grpc server methods
@@ -37,6 +38,9 @@ const (
 	FieldRemoteAddr = "remote_addr"
 	// FieldMethod adds the called method name in log messages
 	FieldMethod = "method"
+	// FieldRequestID adds the request unique correlation ID in log messages
+	// See github.com/jucrouzet/grpcutils/pkg/requestid
+	FieldRequestID = "requestid"
 )
 
 var (
@@ -195,6 +199,9 @@ func (l *Logger) getForUnary(ctx context.Context, infos *grpc.UnaryServerInfo) (
 	if l.hasField(FieldServerType) {
 		logger = logger.With(zap.String(FieldServerType, fmt.Sprintf("%T", infos.Server)))
 	}
+	if l.hasField(FieldRequestID) && requestid.GetFromContext(ctx) != "" {
+		logger = logger.With(zap.String(FieldRequestID, requestid.GetFromContext(ctx)))
+	}
 	return logger, nil
 }
 
@@ -216,6 +223,9 @@ func (l *Logger) getForStream(
 	}
 	if l.hasField(FieldServerType) {
 		logger = logger.With(zap.String(FieldServerType, fmt.Sprintf("%T", srv)))
+	}
+	if l.hasField(FieldRequestID) && requestid.GetFromContext(ctx) != "" {
+		logger = logger.With(zap.String(FieldRequestID, requestid.GetFromContext(ctx)))
 	}
 	return logger, nil
 }
