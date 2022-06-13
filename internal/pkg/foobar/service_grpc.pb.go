@@ -36,7 +36,7 @@ func NewDummyServiceClient(cc grpc.ClientConnInterface) DummyServiceClient {
 
 func (c *dummyServiceClient) Foo(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/gen.DummyService/Foo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/foobar.DummyService/Foo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (c *dummyServiceClient) Foo(ctx context.Context, in *Empty, opts ...grpc.Ca
 }
 
 func (c *dummyServiceClient) FooS(ctx context.Context, opts ...grpc.CallOption) (DummyService_FooSClient, error) {
-	stream, err := c.cc.NewStream(ctx, &DummyService_ServiceDesc.Streams[0], "/gen.DummyService/FooS", opts...)
+	stream, err := c.cc.NewStream(ctx, &DummyService_ServiceDesc.Streams[0], "/foobar.DummyService/FooS", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func _DummyService_Foo_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/gen.DummyService/Foo",
+		FullMethod: "/foobar.DummyService/Foo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DummyServiceServer).Foo(ctx, req.(*Empty))
@@ -154,7 +154,7 @@ func (x *dummyServiceFooSServer) Recv() (*Empty, error) {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DummyService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "gen.DummyService",
+	ServiceName: "foobar.DummyService",
 	HandlerType: (*DummyServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
