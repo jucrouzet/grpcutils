@@ -1,0 +1,12 @@
+syntax="proto3";
+
+option go_package = "github.com/jucrouzet/grpcutils/internal/pkg/foobar";
+
+package foobar;
+
+message Empty{}
+
+service DummyService {
+    rpc Foo(Empty) returns (Empty);
+    rpc FooS(stream Empty) returns (stream Empty);
+}
