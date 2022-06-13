@@ -51,7 +51,7 @@ type Options func(*Authorization) error
 // The value returned will be stored in the context and available in methods implementations by
 // calling GetFromContext.
 // The returned value type if correct must be the same as the one used in GetFromContext.
-type CredentialValidator func(ctx context.Context, credential string) (interface{}, error)
+type CredentialValidator func(ctx context.Context, credential string) (any, error)
 
 type contextValueKeyType string
 
@@ -129,8 +129,8 @@ func AppendToOutgoingContext(ctx context.Context, method, credential string) (co
 	return metadata.NewOutgoingContext(ctx, md), nil
 }
 
-// GetUnaryInterceptor returns a gRPC server unary interceptor that sets logger in call context
-func (a *Authorization) GetUnaryInterceptor() grpc.UnaryServerInterceptor {
+// UnaryInterceptor returns a gRPC server unary interceptor that sets logger in call context
+func (a *Authorization) UnaryInterceptor() grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
 		req interface{},
@@ -141,8 +141,8 @@ func (a *Authorization) GetUnaryInterceptor() grpc.UnaryServerInterceptor {
 	}
 }
 
-// GetStreamInterceptor returns a gRPC server stream interceptor that sets logger in stream context
-func (a *Authorization) GetStreamInterceptor() grpc.StreamServerInterceptor {
+// StreamInterceptor returns a gRPC server stream interceptor that sets logger in stream context
+func (a *Authorization) StreamInterceptor() grpc.StreamServerInterceptor {
 	return func(
 		srv interface{},
 		stream grpc.ServerStream,
@@ -159,7 +159,7 @@ func (a *Authorization) GetStreamInterceptor() grpc.StreamServerInterceptor {
 
 var authorizationMetaRegex = regexp.MustCompile(`(?m)^([^\s]+)\s+(.*)`)
 
-func (a *Authorization) parseMeta(ctx context.Context) interface{} {
+func (a *Authorization) parseMeta(ctx context.Context) any {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok || len(md[MetadataName]) < 1 {
 		return ErrMissing
@@ -180,7 +180,6 @@ func (a *Authorization) parseMeta(ctx context.Context) interface{} {
 		return err
 	}
 	return v
-
 }
 
 func validateMethod(method string) error {

@@ -3,7 +3,6 @@ module github.com/jucrouzet/grpcutils
 go 1.18
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/google/uuid v1.1.2
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.21.0
@@ -12,6 +11,7 @@ require (
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect

@@ -15,6 +15,16 @@ import (
 	"github.com/jucrouzet/grpcutils/internal/pkg/utils"
 )
 
+func TestGetFromContext(t *testing.T) {
+	l, err := GetFromContext(context.Background())
+	assert.ErrorIs(t, err, ErrNoLoggerInContext, "GetFromContext with a non-zapplogger context should return a ErrNoLoggerInContext error")
+	assert.Nil(t, l, "GetFromContext with a non-zapplogger context should not return a logger")
+
+	l, err = GetFromContext(context.Background(), true)
+	assert.Nil(t, err, "GetFromContext with a non-zapplogger context and noopLoggerIfNotPresent to true should not return an error")
+	assert.NotNil(t, l, "GetFromContext with a non-zapplogger context should return a logger")
+}
+
 func TestWithLogger(t *testing.T) {
 	l, err := New(WithLogger(nil))
 	assert.ErrorIs(t, err, ErrInvalidOptionValue, "using a nil logger should return an ErrInvalidOptionValue")

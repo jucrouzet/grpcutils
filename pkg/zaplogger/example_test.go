@@ -42,8 +42,8 @@ func ExampleWithLogger() {
 	a.GetLogger().Debug("hello world")
 }
 
-// ExampleUnaryInterceptor_other shows how to use the unary interceptor of zaplogger
-func ExampleUnaryInterceptor() {
+// Example_otherInterceptors shows how to use the interceptors of zaplogger
+func Example_otherInterceptors() {
 	l, err := zaplogger.New()
 	if err != nil {
 		panic(err)
@@ -52,6 +52,7 @@ func ExampleUnaryInterceptor() {
 	// Interceptor can be used directly
 	server := grpc.NewServer(
 		grpc.UnaryInterceptor(l.UnaryInterceptor()),
+		grpc.StreamInterceptor(l.StreamInterceptor()),
 	)
 	// Or chained with other interceptors
 	server = grpc.NewServer(
@@ -60,11 +61,16 @@ func ExampleUnaryInterceptor() {
 			l.UnaryInterceptor(),
 			// other interceptor
 		),
+		grpc.ChainStreamInterceptor(
+			// StreamInterceptor
+			l.StreamInterceptor(),
+			// other interceptor
+		),
 	)
 	foobar.RegisterDummyServiceServer(server, &foobar.UnimplementedDummyServiceServer{})
 }
 
-func ExampleGetFromContext_unary(ctx context.Context) {
+func ExampleGetFromContext_unary() {
 	// in the body of a service method like :
 	// func MyServiceUnaryMethod(ctx context.Context, param service.Type) (service.Type, error) {
 	logger, err := zaplogger.GetFromContext(ctx)
@@ -74,7 +80,7 @@ func ExampleGetFromContext_unary(ctx context.Context) {
 	logger.With(zap.String("foo", "bar")).Info("important message")
 }
 
-func ExampleGetFromContext_stream(s foobar.DummyService_FooSServer) {
+func ExampleGetFromContext_stream() {
 	// in the body of a service method like :
 	// func MyServiceStreamMethod(s service.Service_MethodServer) error {
 	logger, err := zaplogger.GetFromContext(s.Context())
@@ -83,3 +89,6 @@ func ExampleGetFromContext_stream(s foobar.DummyService_FooSServer) {
 	}
 	logger.With(zap.String("foo", "bar")).Info("important message")
 }
+
+var ctx context.Context
+var s foobar.DummyService_FooSServer

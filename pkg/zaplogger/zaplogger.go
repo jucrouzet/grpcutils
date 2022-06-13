@@ -51,10 +51,17 @@ type contextValueKeyType string
 var contextValueKey = contextValueKeyType("github.com/jucrouzet/grpcutils/zaplogger value")
 
 // GetFromContext returns the logger from a context that has been set in UnaryInterceptor or
-// StreamInterceptor. If logger is not set in context, ErrNoLoggerInContext is returned.
-func GetFromContext(ctx context.Context) (*zap.Logger, error) {
+// StreamInterceptor.
+// If logger is not set in context and noopLoggerIfNotPresent is not specified or false
+// ErrNoLoggerInContext is returned.
+// If logger is not set in context and noopLoggerIfNotPresent is true, a noop logger is returned
+// and err can be ignored.
+func GetFromContext(ctx context.Context, noopLoggerIfNotPresent ...bool) (*zap.Logger, error) {
 	logger, ok := ctx.Value(contextValueKey).(*zap.Logger)
 	if !ok || logger == nil {
+		if len(noopLoggerIfNotPresent) > 0 && noopLoggerIfNotPresent[0] {
+			return zap.New(nil), nil
+		}
 		return nil, ErrNoLoggerInContext
 	}
 	return logger, nil

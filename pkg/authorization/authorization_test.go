@@ -141,8 +141,8 @@ func TestAuthorizationInterceptors(t *testing.T) {
 	utils.TestCallFooS(t, &dummyAuthorization{t: t, expectingError: ErrUnchecked}, nil, nil)
 
 	opts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(a.GetUnaryInterceptor()),
-		grpc.StreamInterceptor(a.GetStreamInterceptor()),
+		grpc.UnaryInterceptor(a.UnaryInterceptor()),
+		grpc.StreamInterceptor(a.StreamInterceptor()),
 	}
 
 	utils.TestCallFoo(t, &dummyAuthorization{t: t, expectingError: ErrMissing}, nil, opts)
