@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"strings"
 
 	"google.golang.org/grpc/peer"
 )
@@ -27,4 +28,23 @@ func GetFromContext(ctx context.Context) (net.Addr, error) {
 		return nil, fmt.Errorf("%w: nil address", ErrNotAvailable)
 	}
 	return pr.Addr, nil
+}
+
+// GetIPFromContext returns the remote ip of the client calling the method, for both unary
+// and streaming method, in a gRPC call context.
+// ErrNotAvailable is returned if remote address is not available.
+func GetIPFromContext(ctx context.Context) (net.IP, error) {
+	addr, err := GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	parts := strings.Split(addr.String(), ":")
+	if len(parts) < 2 {
+		return nil, fmt.Errorf("%w: could not retreive remote address (invalid address format)", ErrNotAvailable)
+	}
+	ip := net.ParseIP(strings.Join(parts[:len(parts)-1], ":"))
+	if ip == nil {
+		return nil, fmt.Errorf("%w: could not retreive remote address (invalid IP)", ErrNotAvailable)
+	}
+	return ip, nil
 }

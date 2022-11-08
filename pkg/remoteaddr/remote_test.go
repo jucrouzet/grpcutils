@@ -5,10 +5,9 @@ import (
 	"io"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/jucrouzet/grpcutils/internal/pkg/foobar"
 	"github.com/jucrouzet/grpcutils/internal/pkg/utils"
+	"github.com/stretchr/testify/assert"
 )
 
 type dummyRemote struct {
